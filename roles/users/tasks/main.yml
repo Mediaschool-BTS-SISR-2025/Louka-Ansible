@@ -1,0 +1,20 @@
+---
+- name: Lire CSV utilisateurs
+  slurp:
+    src: "{{ role_path }}/files/users.csv"
+  register: users_csv_raw
+
+- name: Convertir CSV
+  set_fact:
+    users_csv_content: "{{ users_csv_raw.content | b64decode | splitlines() }}"
+
+- name: Créer utilisateurs
+  user:
+    name: "{{ item_fields[0] }}"
+    comment: "{{ item_fields[1] }}"
+    groups: "{{ item_fields[2] }},{{ item_fields[3] }}"
+    password: "{{ item_fields[4] | password_hash('sha512') }}"
+    shell: "{{ item_fields[5] }}"
+  loop: "{{ users_csv_content }}"
+  vars:
+    item_fields: "{{ item.split(',') }}"

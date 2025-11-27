@@ -1,0 +1,21 @@
+---
+- name: Mettre à jour apt
+  apt:
+    update_cache: yes
+    upgrade: dist
+    cache_valid_time: 3600
+
+- name: Installer paquets essentiels
+  apt:
+    name:
+      - sudo
+      - vim
+      - git
+      - curl
+      - wget
+      - unzip
+      - ca-certificates
+      - lsb-release
+      - apt-transport-https
+      - gnupg
+    state: present

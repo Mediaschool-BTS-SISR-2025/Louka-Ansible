@@ -1,0 +1,28 @@
+---
+- name: Installer UFW
+  apt:
+    name: ufw
+    state: present
+
+- name: Autoriser SSH
+  ufw:
+    rule: allow
+    port: "{{ allow_ssh_port }}"
+    proto: tcp
+
+- name: Autoriser HTTP
+  ufw:
+    rule: allow
+    port: "{{ allow_http_port }}"
+    proto: tcp
+
+- name: Autoriser HTTPS
+  ufw:
+    rule: allow
+    port: "{{ allow_https_port }}"
+    proto: tcp
+
+- name: Activer UFW
+  ufw:
+    state: enabled
+    logging: 'on'

@@ -1,0 +1,22 @@
+---
+# Variables globales
+ansible_python_interpreter: /usr/bin/python3
+
+default_shell: /bin/bash
+
+docker_users:
+  - louka
+
+# Firewall
+allow_ssh_port: 22
+allow_http_port: 80
+allow_https_port: 443
+
+# GLPI
+glpi:
+  db_name: glpidb
+  db_user: admin
+  db_password: "MotDePasseSecurise"
+  db_root_password: "RootDBPass"
+  install_dir: /var/www/html/glpi
+  glpi_download_url: "https://github.com/glpi-project/glpi/releases/latest/download/glpi.tgz"

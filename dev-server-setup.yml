@@ -1,0 +1,13 @@
+---
+- name: Template Ansible pour déploiement GLPI (BTS SIO)
+  hosts: dev_server
+  become: yes
+  vars_files:
+    - group_vars/all.yml
+
+  roles:
+    - common
+    - docker
+    - firewall
+    - users
+    - glpi

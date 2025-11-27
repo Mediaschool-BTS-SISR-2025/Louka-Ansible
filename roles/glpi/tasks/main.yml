@@ -1,0 +1,77 @@
+---
+- name: Installer Apache, PHP, MariaDB
+  apt:
+    name:
+      - apache2
+      - mariadb-server
+      - mariadb-client
+      - php
+      - php-mysql
+      - php-gd
+      - php-curl
+      - php-intl
+      - php-xml
+      - php-mbstring
+      - php-ldap
+      - php-zip
+      - php-bcmath
+      - php-cli
+      - unzip
+      - wget
+    state: present
+    update_cache: yes
+
+- name: Assurer MariaDB démarré
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Créer DB GLPI
+  community.mysql.mysql_db:
+    name: "{{ glpi.db_name }}"
+    encoding: utf8mb4
+    collation: utf8mb4_general_ci
+    state: present
+
+- name: Créer utilisateur GLPI
+  community.mysql.mysql_user:
+    name: "{{ glpi.db_user }}"
+    password: "{{ glpi.db_password }}"
+    priv: "{{ glpi.db_name }}.*:ALL"
+    host: localhost
+    state: present
+
+- name: Télécharger GLPI
+  get_url:
+    url: "{{ glpi.glpi_download_url }}"
+    dest: /tmp/glpi.tgz
+
+- name: Extraire GLPI
+  unarchive:
+    src: /tmp/glpi.tgz
+    dest: /var/www/html/
+    remote_src: yes
+
+- name: Permissions GLPI
+  file:
+    path: "{{ glpi.install_dir }}"
+    owner: www-data
+    group: www-data
+    mode: '0755'
+    recurse: yes
+
+- name: Copier configuration Apache
+  template:
+    src: glpi.conf.j2
+    dest: /etc/apache2/sites-available/glpi.conf
+
+- name: Activer GLPI
+  shell: |
+    a2ensite glpi.conf
+    a2enmod rewrite
+
+- name: Redémarrer Apache
+  service:
+    name: apache2
+    state: restarted

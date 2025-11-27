@@ -1,0 +1,2 @@
+[dev_server]
+mon_serveur ansible_host=10.0.108.83 ansible_user=louka ssh_private_key_file=~/.ssh/id_rsa
